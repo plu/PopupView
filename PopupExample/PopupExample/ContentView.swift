@@ -246,6 +246,7 @@ struct ContentView : View {
             } customize: {
                 $0
                     .closeOnTap(false)
+                    .isOpaque(true)
                     .backgroundColor(.black.opacity(0.4))
             }
 

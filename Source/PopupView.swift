@@ -349,6 +349,8 @@ public struct Popup<PopupContent: View>: ViewModifier {
 
     @State private var safeAreaInsets: EdgeInsets = EdgeInsets()
 
+    @State private var windowSize: CGSize = .zero
+
     /// Variable used to control what is animated and what is not
     @State var actualCurrentOffset = CGPoint.pointFarAwayFromScreen
 
@@ -459,7 +461,7 @@ public struct Popup<PopupContent: View>: ViewModifier {
 
     var screenSize: CGSize {
 #if os(iOS)
-        return UIScreen.main.bounds.size
+        return windowSize
 #elseif os(watchOS)
         return WKInterfaceDevice.current().screenBounds.size
 #else
@@ -468,11 +470,11 @@ public struct Popup<PopupContent: View>: ViewModifier {
     }
 
     private var screenWidth: CGFloat {
-        screenSize.width
+        windowSize.width
     }
 
     private var screenHeight: CGFloat {
-        screenSize.height
+        windowSize.height
     }
 
     // MARK: - Content Builders
@@ -481,6 +483,7 @@ public struct Popup<PopupContent: View>: ViewModifier {
         content
             .frameGetter($presenterContentRect)
             .safeAreaGetter($safeAreaInsets)
+            .windowSizeGetter($windowSize)
             .overlay(
                 Group {
                     if showContent, presenterContentRect != .zero {

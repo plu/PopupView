@@ -119,6 +119,70 @@ extension View {
     }
 }
 
+final class WindowSizeModel: ObservableObject {
+    @Published
+    var windowSize = CGSize.zero
+}
+
+struct WindowSizeGetter: ViewModifier {
+
+    @Binding var size: CGSize
+
+    func body(content: Content) -> some View {
+        content
+            .overlay(WindowGetterRepresentable(size: $size))
+    }
+
+    struct WindowGetterRepresentable: UIViewRepresentable {
+
+        @Binding var size: CGSize
+
+        final class WindowGetter: UIView {
+            @Binding var size: CGSize
+
+            init(size: Binding<CGSize>) {
+                _size = size
+                super.init(frame: .init(origin: .zero, size: .init(width: 1, height: 1)))
+                backgroundColor = .clear
+                isUserInteractionEnabled = false
+            }
+
+            override func didMoveToWindow() {
+                super.didMoveToWindow()
+                updateSize()
+            }
+
+            override func layoutSubviews() {
+                super.layoutSubviews()
+                updateSize()
+            }
+
+            private func updateSize() {
+                if let size = window?.frame.size, size != .zero, size != self.size {
+                    self.size = size
+                }
+            }
+
+            @available(*, unavailable)
+            required init?(coder: NSCoder) {
+                fatalError("init(coder:) has not been implemented")
+            }
+        }
+
+        func makeUIView(context _: Context) -> WindowGetter {
+            return WindowGetter(size: $size)
+        }
+
+        func updateUIView(_ windowGetter: WindowGetter, context _: Context) {}
+    }
+}
+
+extension View {
+    func windowSizeGetter(_ size: Binding<CGSize>) -> some View {
+        modifier(WindowSizeGetter(size: size))
+    }
+}
+
 // MARK: - AnimationCompletionObserver
 
 struct AnimationCompletionObserverModifier<Value>: AnimatableModifier where Value: VectorArithmetic, Value: Comparable {
