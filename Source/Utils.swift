@@ -119,11 +119,6 @@ extension View {
     }
 }
 
-final class WindowSizeModel: ObservableObject {
-    @Published
-    var windowSize = CGSize.zero
-}
-
 struct WindowSizeGetter: ViewModifier {
 
     @Binding var size: CGSize
