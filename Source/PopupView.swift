@@ -483,7 +483,9 @@ public struct Popup<PopupContent: View>: ViewModifier {
         content
             .frameGetter($presenterContentRect)
             .safeAreaGetter($safeAreaInsets)
+#if os(iOS)
             .windowSizeGetter($windowSize)
+#endif
             .overlay(
                 Group {
                     if showContent, presenterContentRect != .zero {

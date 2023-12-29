@@ -119,6 +119,7 @@ extension View {
     }
 }
 
+#if os(iOS)
 struct WindowSizeGetter: ViewModifier {
 
     @Binding var size: CGSize
@@ -177,6 +178,7 @@ extension View {
         modifier(WindowSizeGetter(size: size))
     }
 }
+#endif
 
 // MARK: - AnimationCompletionObserver
 
